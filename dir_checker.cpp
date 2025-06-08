@@ -1,4 +1,3 @@
-#include <sys/types.h> //только для Linux
 #include <dirent.h>
 #include <string>
 #include <iostream>
@@ -8,17 +7,20 @@ using namespace std;
 
 void recurse(const string& path, vector<string>& files) {
     DIR *dir;
-    struct dirent *entry;
     dir = opendir(path.c_str());
-
     if (!dir) return;
 
+    struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {
-        string file_path = path + entry->d_name;
+        //cout << "Watching: " << entry->d_name << "\n";
+        if (string(entry->d_name) == "." || string(entry->d_name) == "..") continue;
+        
+        string file_path = path + "/" + entry->d_name;
 
         struct stat st; // возвращает информацию о файле или директории
+        // случаи несуществующего пути или отсутствия у процесса прав на чтение
         if (stat(file_path.c_str(), &st) == -1) continue;
-
+        
         // логический макрос для проверки значения поля
         if (S_ISDIR(st.st_mode)) {
             recurse(file_path, files);
