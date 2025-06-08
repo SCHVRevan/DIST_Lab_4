@@ -1,18 +1,31 @@
-#include <stdio.h>
 #include <sys/types.h> //только для Linux
 #include <dirent.h>
+#include <string>
+#include <iostream>
+using namespace std;
 
-int main() {
+void get_files(const string& path) {
     DIR *dir;
     struct dirent *entry;
-    dir = opendir("/");
+    dir = opendir(path.c_str());
     if (!dir) {
         perror("diropen");
-        return 1;
+        return;
     }
     while ((entry = readdir(dir)) != NULL) {
-        printf("%s\n", entry->d_name);
+        cout << entry->d_name << "\n";
     }
     closedir(dir);
+    return;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        cout << "Usage:\n" << argv[0] << " <path>\n";
+        return 1;
+    }
+
+    get_files(argv[1]);
+
     return 0;
 }
