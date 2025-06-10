@@ -1,6 +1,7 @@
-#include <iostream> 
-#include <string>
+#include <iostream>
+#include <iomanip>
 #include "dir_checker.h"
+#include "encryptor.h"
 #include "cipher.h"
 
 int main(int argc, char* argv[]) {
@@ -10,19 +11,17 @@ int main(int argc, char* argv[]) {
     }
 
     std::string key = argv[3];
-    std::vector<std::string> f;
-    f = dir_checker::get_files(argv[1]);
+    std::string mode = argv[2];
+    std::string f = argv[1];
+
+    Encryptor& e = Encryptor::Instance();
+    e.setKey(key);
     
-    if (static_cast<std::string>(argv[2]) == "enc") {
-        cipher::encrypt(f[0], key);
-    }
-    else if (static_cast<std::string>(argv[2]) == "dec") {
-        if (!(cipher::decrypt(f[0], key))) {
-            std::cout << f[0] << " wasn't encrypted with AES256\n";
-        }
-    }
+    if (mode == "enc") e.encrypt(f);
+    else if (mode == "dec") e.decrypt(f);
     else {
-        std::cout << "Usage:\n" << argv[0] << " <path> <mode (enc/dec)> <key>\n";
+        std::cout << "Typo in:\n" << argv[0] << " <path> <enc/dec> <key>\n";
+        std::cout << std::setfill(' ') << std::setw(22) << "↑\n" << std::setfill(' ') << std::setw(18 - (mode.length())/2) << "but got " << mode << "\n";
         return 1;
     }
 
