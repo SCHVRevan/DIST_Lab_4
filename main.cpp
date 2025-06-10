@@ -17,7 +17,9 @@ int main(int argc, char* argv[]) {
         cipher::encrypt(f[0], key);
     }
     else if (static_cast<std::string>(argv[2]) == "dec") {
-        cipher::decrypt(f[0], key);
+        if (!(cipher::decrypt(f[0], key))) {
+            std::cout << f[0] << " wasn't encrypted with AES256\n";
+        }
     }
     else {
         std::cout << "Usage:\n" << argv[0] << " <path> <mode (enc/dec)> <key>\n";
