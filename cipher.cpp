@@ -9,6 +9,9 @@ bool cipher::encrypt(const string& file, const string& key) {
     ifstream infile(file, ios::binary);
     vector<unsigned char> data((istreambuf_iterator<char>(infile)), istreambuf_iterator<char>());
     
+    int pad = AES_BLOCK_SIZE - data.size() % AES_BLOCK_SIZE;
+    data.insert(data.end(), pad, pad);
+
     AES_KEY aesKey;
     // reinterpret_cast может быть небезопасным (его поведение зависит от реализации компилятора)
     AES_set_encrypt_key(reinterpret_cast<const unsigned char*>(key.c_str()), 256, &aesKey);
@@ -26,7 +29,8 @@ bool cipher::encrypt(const string& file, const string& key) {
 bool cipher::decrypt(const string& file, const string& key) {
     ifstream infile(file, ios::binary);
     vector<unsigned char> data((istreambuf_iterator<char>(infile)), istreambuf_iterator<char>());
-    
+    if (data.size() % AES_BLOCK_SIZE) return 0;
+
     AES_KEY aesKey;
     // reinterpret_cast может быть небезопасным (его поведение зависит от реализации компилятора)
     AES_set_decrypt_key(reinterpret_cast<const unsigned char*>(key.c_str()), 256, &aesKey);
