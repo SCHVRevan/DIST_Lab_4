@@ -3,9 +3,10 @@
 #include <iostream>
 #include <vector>
 #include <sys/stat.h>
+#include "dir_checker.h"
 using namespace std;
 
-void recurse(const string& path, vector<string>& files) {
+void dir_checker::recurse(const string& path, vector<string>& files) {
     DIR *dir;
     dir = opendir(path.c_str());
     if (!dir) return;
@@ -33,24 +34,8 @@ void recurse(const string& path, vector<string>& files) {
     closedir(dir);
 }
 
-vector<string> get_files(const string& path) {
+vector<string> dir_checker::get_files(const string& path) {
     vector<string> files;
     recurse(path, files);
     return files;
-}
-
-int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        cout << "Usage:\n" << argv[0] << " <path>\n";
-        return 1;
-    }
-
-    vector<string> f;
-    f = get_files(argv[1]);
-
-    for (int i = 0; i < size(f); i++) {
-        cout << f[i] << "\n";
-    }
-
-    return 0;
 }
