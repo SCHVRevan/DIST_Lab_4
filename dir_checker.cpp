@@ -1,7 +1,5 @@
 #include <dirent.h>
-#include <string>
 #include <iostream>
-#include <vector>
 #include <sys/stat.h>
 #include "dir_checker.h"
 using namespace std;
